@@ -1,0 +1,19 @@
+[0] Config.pm:329> INFO - This is Biber 2.22
+[0] Config.pm:332> INFO - Logfile is 'bb2.blg'
+[23] biber:342> INFO - === Mon Sep 21, 2026, 09:11:03
+[29] Biber.pm:421> INFO - Reading 'bb2.bcf'
+[54] Biber.pm:1002> INFO - Found 3 citekeys in bib section 0
+[59] Biber.pm:4487> INFO - Processing section 0
+[62] Biber.pm:4680> INFO - Looking for bibtex file 'refs2.bib' for section 0
+[63] bibtex.pm:1713> INFO - LaTeX decoding ...
+[64] bibtex.pm:1519> INFO - Found BibTeX data source 'refs2.bib'
+[77] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[77] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[77] Biber.pm:4307> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[77] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[78] bbl.pm:676> INFO - Writing 'bb2.bbl' with encoding 'UTF-8'
+[79] bbl.pm:779> INFO - Output to bb2.bbl
+[79] Biber.pm:132> WARN - Duplicate entry key: 'beta' in file 'refs2.bib', skipping ...
+[79] Biber.pm:132> WARN - article entry 'alpha' (refs2.bib): Invalid format '2020-13-45' of date field 'date' - ignoring
+[79] Biber.pm:132> WARN - I didn't find a database entry for 'gamma' (section 0)
+[79] Biber.pm:134> INFO - WARNINGS: 3

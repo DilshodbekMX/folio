@@ -1,0 +1,14 @@
+\documentclass{article}
+\ExplSyntaxOn
+\msg_new:nnn { mymod } { w } { First~line \\ second~line~(with~paren) }
+\msg_new:nnn { mymod } { e } { An~expl3~error~#1 }
+\msg_warning:nn { mymod } { w }
+\msg_error:nnn { mymod } { e } { arg }
+\ExplSyntaxOff
+\UseHook{env/foo/before}
+\NewDocumentCommand\foo{m}{#1}
+\NewDocumentCommand\foo{m}{#1}
+\begin{document}
+\tracinglostchars=3
+Snow ☃.
+\end{document}

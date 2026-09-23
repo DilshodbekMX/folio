@@ -1,0 +1,21 @@
+node_modules/
+data/
+web/dist/
+test-results/
+playwright-report/
+.env
+e2e/.auth/
+
+# logs, but keep the test fixtures
+*.log
+!shared/test/fixtures/**/*.log
+!server/test/**/fixtures/**/*.log
+
+# backups written by `npm run backup`
+folio-backup-*.tgz
+
+# the user's own paper fixtures are not distributed (unpublished manuscript)
+shared/test/fixtures/paper/
+shared/test/fixtures/texlog/antiddos_v2*.log
+shared/test/fixtures/synctex/paper*.gz
+shared/test/fixtures/synctex/paper-golden.json

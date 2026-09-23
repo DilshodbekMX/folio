@@ -1,0 +1,15 @@
+{
+  "name": "@folio/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./api": "./src/api.ts",
+    "./protocol": "./src/protocol.ts",
+    "./paths": "./src/paths.ts",
+    "./filetypes": "./src/filetypes.ts",
+    "./texlog": "./src/texlog/index.ts",
+    "./synctex": "./src/synctex/index.ts",
+    "./latex": "./src/latex/index.ts"
+  }
+}

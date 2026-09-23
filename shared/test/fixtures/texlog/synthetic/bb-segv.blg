@@ -1,0 +1,11 @@
+[0] Config.pm:329> INFO - This is Biber 2.22
+[0] Config.pm:332> INFO - Logfile is 'bb.blg'
+[24] biber:342> INFO - === Mon Sep 21, 2026, 09:11:06
+[30] Biber.pm:421> INFO - Reading 'bb.bcf'
+[54] Biber.pm:1002> INFO - Found 5 citekeys in bib section 0
+[59] Biber.pm:4487> INFO - Processing section 0
+[62] Biber.pm:4680> INFO - Looking for bibtex file 'refs.bib' for section 0
+[63] bibtex.pm:1713> INFO - LaTeX decoding ...
+[64] bibtex.pm:1519> INFO - Found BibTeX data source 'refs.bib'
+[72] bibtex.pm:97> FATAL - Caught signal: SEGV
+Likely your .bib has a very bad entry which causes libbtparse to crash: 

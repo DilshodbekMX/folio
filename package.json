@@ -1,0 +1,46 @@
+{
+  "name": "folio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Folio \u2014 a self-hosted, Overleaf-style collaborative LaTeX editor",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,web -c blue,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "tsx watch --clear-screen=false server/src/main.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build": "vite build --config web/vite.config.ts",
+    "start": "NODE_ENV=production exec tsx server/src/main.ts",
+    "typecheck": "tsc -p shared --noEmit && tsc -p server --noEmit && tsc -p web --noEmit && tsc -p e2e --noEmit",
+    "test": "vitest run",
+    "test:docker": "FOLIO_DOCKER_TESTS=1 vitest run",
+    "test:scripts": "vitest run --config scripts/vitest.config.mjs",
+    "e2e": "playwright test",
+    "seed": "tsx server/src/cli/seed.ts",
+    "create-user": "tsx server/src/cli/create-user.ts",
+    "reset-password": "tsx server/src/cli/reset-password.ts",
+    "doctor": "tsx server/src/cli/doctor.ts",
+    "backup": "node scripts/backup.mjs",
+    "check:dedupe": "npm ls yjs @codemirror/state @codemirror/view @lezer/common",
+    "setup": "node scripts/setup.mjs",
+    "e2e:fake": "COMPILE_RUNNER=fake playwright test",
+    "typecheck:e2e": "tsc -p e2e --noEmit"
+  },
+  "dependencies": {
+    "tsx": "4.23.15"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@types/node": "22.20.4",
+    "concurrently": "10.0.5",
+    "typescript": "6.0.3",
+    "vitest": "5.0.1"
+  }
+}

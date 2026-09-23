@@ -1,0 +1,23 @@
+\documentclass[a4paper,nonexistentoption]{article}
+\usepackage{hyperref}
+\begin{document}
+\section{Test $x^2$}\label{sec:test}
+Text with \undefinedmacro here.
+Math x^2 outside math.
+See \ref{fig:missing} and \cite{nokey}.
+\input{sections/intro}
+\input{"my dir/file name"}
+{\bfseries\scshape Bold small caps}
+\hbox to 2cm{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (open}
+\label{dup}\label{dup}
+\PackageError{mypkg}{Something went wrong}{This is the help text\MessageBreak on two lines.}
+\textbf{runaway
+
+argument}
+\begin{tabular}{p{1cm}}
+Averyveryverylongwordthatcannotbehyphenated \\
+\end{tabular}
+
+\parbox{2.2cm}{Supercalifragilistic expialidocious words everywhere}
+Snowman: ☃.
+\end{document}

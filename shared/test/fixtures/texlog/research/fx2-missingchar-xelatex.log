@@ -1,0 +1,84 @@
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.8.16)  21 SEP 2026 07:50
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**missingchar.tex
+(./missingchar.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-07-20>
+(/usr/local/texlive/2026/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2026/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count273
+\c@section=\count274
+\c@subsection=\count275
+\c@subsubsection=\count276
+\c@paragraph=\count277
+\c@subparagraph=\count278
+\c@figure=\count279
+\c@table=\count280
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen150
+)
+(/usr/local/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
+File: l3backend-xetex.def 2026-07-20 L3 backend support: XeTeX
+\g__graphics_track_int=\count281
+\g__pdfannot_backend_int=\count282
+\g__pdfannot_backend_link_int=\count283
+)
+No file missingchar.aux.
+\openout1 = `missingchar.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+Missing character: There is no ☃ (U+2603) in font [lmroman10-regular]:mapping=t
+ex-text;!
+Missing character: There is no 漢 (U+6F22) in font [lmroman10-regular]:mapping=t
+ex-text;!
+Missing character: There is no 字 (U+5B57) in font [lmroman10-regular]:mapping=t
+ex-text;!
+Missing character: There is no 😀 (U+1F600) in font [lmroman10-regular]:mapping=
+tex-text;!
+
+Package testpkg Warning: Unicode wrap test: ééééééééééééééééééééééééééééééééééé
+éééééééééééé end of message here on input line 4.
+
+
+Package testpkg Warning: Second message with ascii only padding padding padding
+ padding padding padding padding.
+
+[1
+
+] (out-xelatex/missingchar.aux)
+ ***********
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-07-20>
+ ***********
+ ) 
+Here is how much of TeX's memory you used:
+ 434 strings out of 467805
+ 8459 string characters out of 5423216
+ 429029 words of memory out of 5000000
+ 29604 multiletter control sequences out of 15000+600000
+ 627729 words of font info for 41 fonts, out of 8000000 for 9000
+ 1348 hyphenation exceptions out of 8191
+ 35i,5n,38p,152b,124s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on out-xelatex/missingchar.pdf (1 page).

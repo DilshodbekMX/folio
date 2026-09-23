@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{amsmath}
+\newcommand{\foo}[1]{#1}
+\begin{document}
+Text x^2 here.
+
+\foo{abc
+
+def}
+
+\begin{itemize}
+\item one
+\end{enumerate}
+
+\PackageError{mypkg}{Something bad happened (really)}{Help text for the error.}
+
+\halign to 3cm{#\tabskip0pt\cr very wide content here that overflows\cr}
+
+\vbox to 2cm{\hrule height 3cm}
+
+\rule{1cm}{30cm}
+
+\begin{figure}[h]\rule{1cm}{1cm}\end{figure}
+
+\ref{a}\ref{b}
+\end{document}

@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bt.aux
+The style file: plain.bst
+Database file #1: refs.bib
+Repeated entry---line 14 of file refs.bib
+ : @article{good
+ :              ,
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 22 of file refs.bib
+ :   
+ :   author = {Carol},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--string name "undefinedmacro" is undefined
+--line 30 of file refs.bib
+Warning--I didn't find a database entry for "missingkey"
+Warning--to sort, need author or key in broken
+Warning--empty author in broken
+Warning--empty title in broken
+Warning--empty journal in broken
+Warning--empty year in broken
+Warning--empty journal in macroerr
+Warning--empty journal in nojournal
+You've used 4 entries,
+            2118 wiz_defined-function locations,
+            512 strings with 4105 characters,
+and the built_in function-call counts, 787 in all, are:
+= -- 68
+> -- 22
+< -- 0
++ -- 11
+- -- 6
+* -- 43
+:= -- 139
+add.period$ -- 10
+call.type$ -- 4
+change.case$ -- 14
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 40
+empty$ -- 70
+format.name$ -- 6
+if$ -- 152
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 21
+num.names$ -- 6
+pop$ -- 26
+preamble$ -- 1
+purify$ -- 11
+quote$ -- 0
+skip$ -- 28
+stack$ -- 0
+substring$ -- 21
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 16
+warning$ -- 7
+while$ -- 6
+width$ -- 5
+write$ -- 34
+(There were 2 error messages)

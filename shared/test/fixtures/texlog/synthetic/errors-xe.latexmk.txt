@@ -1,0 +1,91 @@
+Rc files read (in order):
+  NONE
+Latexmk: This is Latexmk, John Collins, 9 March 2026. Version 4.88.
+Latexmk: Changing directory to '/compile/'
+No existing .aux file, so I'll make a simple one, and require run of *latex.
+Latexmk: applying rule 'xelatex'...
+Rule 'xelatex':  Reasons for rerun
+Category 'other':
+  Rerun of 'xelatex' forced or previously required:
+    Reason or flag: 'Initial setup'
+
+------------
+Run number 1 of rule 'xelatex'
+------------
+------------
+Running 'xelatex -no-pdf -synctex=1 -interaction=batchmode -file-line-error -recorder --jobname="errors"  "errors.tex"'
+------------
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex)
+ restricted \write18 enabled.
+entering extended mode
+
+SyncTeX written on errors.synctex.gz.Latexmk: Getting log file 'errors.log'
+Latexmk: Examining 'errors.fls'
+Latexmk: Examining 'errors.log'
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: Log file says output to 'errors.xdv'
+Latexmk: applying rule 'xelatex'...
+Rule 'xelatex':  Reasons for rerun
+Changed files or newly in use/created:
+  errors.aux
+  errors.out
+
+------------
+Run number 2 of rule 'xelatex'
+------------
+------------
+Running 'xelatex -no-pdf -synctex=1 -interaction=batchmode -file-line-error -recorder --jobname="errors"  "errors.tex"'
+------------
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex)
+ restricted \write18 enabled.
+entering extended mode
+
+SyncTeX written on errors.synctex.gz.Latexmk: Getting log file 'errors.log'
+Latexmk: Examining 'errors.fls'
+Latexmk: Examining 'errors.log'
+Latexmk: Log file says output to 'errors.xdv'
+Latexmk: applying rule 'xdvipdfmx'...
+Rule 'xdvipdfmx':  Reasons for rerun
+Changed files or newly in use/created:
+  errors.xdv
+Category 'changed_source_rules':
+  xelatex
+Category 'no_dest':
+  xdvipdfmx
+
+------------
+Run number 1 of rule 'xdvipdfmx'
+------------
+------------
+Running 'xdvipdfmx -E -o "errors.pdf"  "errors.xdv"'
+------------
+errors.xdv -> errors.pdf
+[1]
+17340 bytes written
+Latexmk: ====Problematic refs and citations with line #s in .tex file:
+  Label `dup' multiply defined
+  Label `dup' multiply defined
+  Reference `fig:missing' on page 1 undefined on input line 7
+  Citation `nokey' on page 1 undefined on input line 7
+  Missing character: There is no ☃ (U+2603) in font [lmroman10-bold]:mapping=tex-text;!
+Latexmk: Summary of warnings from last run of *latex:
+  Latex failed to resolve 1 reference(s)
+  Latex found 2 multiply defined reference(s)
+  =====Latex reported missing or unavailable character(s).
+=====See log file for details.
+  Latex failed to resolve 1 citation(s)
+Latexmk: Errors, in force_mode: so I tried finishing targets
+Collected error summary (may duplicate other messages):
+  xelatex: Command for 'xelatex' gave return code 1
+      Refer to 'errors.log' and/or above output for details
+Latexmk: Undoing directory change
+'xelatex': time = 0.21
+'xelatex': time = 0.22
+'xdvipdfmx': time = 0.10
+Processing time = 0.56, of which invoked processes = 0.53, other = 0.03.
+Elapsed clock time = 0.57.
+Number of rules run = 3
+
+exit=12

@@ -1,0 +1,233 @@
+/*
+ * Folio design tokens. Every component styles itself with these variables only.
+ *
+ * Light values live on :root, dark values on [data-theme="dark"] (App.tsx sets the attribute
+ * from the user's theme setting; main.tsx sets it before the first render to avoid a flash).
+ *
+ * Palette: neutrals are faintly green-tinted greys (never pure grey, never cream) so the
+ * deep leaf-green accent reads as part of the same material rather than a sticker on top.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* surfaces */
+  --bg: #ffffff;
+  --bg-subtle: #f5f7f5;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #edf0ed;
+  --bg-hover: rgba(22, 44, 32, 0.055);
+  --bg-active: rgba(22, 44, 32, 0.1);
+  --bg-inverse: #18211c;
+  --bg-backdrop: rgba(14, 22, 18, 0.42);
+
+  /* text */
+  --fg: #17201b;
+  --fg-muted: #525d57;
+  --fg-subtle: #636e68; /* ≥ 4.5:1 on --bg, --bg-subtle and --bg-sunken (WCAG AA) */
+  --fg-inverse: #f3f6f4;
+  --fg-on-color: #ffffff;
+
+  /* lines */
+  --border: #e0e5e1;
+  --border-strong: #c7cec9;
+  --border-focus: #1f7a4d;
+
+  /* accent: deep leaf green */
+  --accent: #1f7a4d;
+  --accent-hover: #186440;
+  --accent-active: #135234;
+  --accent-fg: #ffffff;
+  --accent-subtle: #e5f2ea;
+  --accent-subtle-fg: #16623d;
+  --accent-ring: rgba(31, 122, 77, 0.38);
+
+  /* status */
+  --danger: #c4312b;
+  --danger-hover: #a82822;
+  --danger-subtle: #fbeceb;
+  --danger-fg: #ffffff;
+  --warning: #b86e00;
+  --warning-subtle: #fdf3e1;
+  --success: #1f7a4d;
+  --success-subtle: #e5f2ea;
+  --info: #2a62b8;
+  --info-subtle: #e9f0fb;
+
+  /* text selection + editor-ish highlights */
+  --selection: rgba(31, 122, 77, 0.2);
+  --highlight: rgba(255, 200, 40, 0.35);
+
+  /* paper (PDF pages and page-like surfaces keep a print look in both themes) */
+  --paper: #ffffff;
+  --paper-ink: #1b1d1c;
+  --paper-ink-muted: #5d625f;
+  --paper-rule: #e3e6e3;
+  --canvas: #e9ece9;
+
+  /* brand constants (identical in both themes: logo, sign-in artwork) */
+  --brand: #1f7a4d;
+  --brand-fg: #ffffff;
+  --brand-tint: rgba(31, 122, 77, 0.16);
+  /* switch knobs and similar always-light handles */
+  --knob: #ffffff;
+
+  /* an always-dark code surface (sign-in artwork, snippets) */
+  --code-card-bg: #141b17;
+  --code-card-bar: #19221d;
+  --code-card-fg: #cfd8d2;
+  --code-card-strong: #eef4f0;
+  --code-card-muted: #56655d;
+  --code-card-dim: #8fa198;
+  --code-card-dot: #34403a;
+  --code-card-accent: #7dd4a6;
+  --code-card-mark: #46b47d;
+  --code-card-env: #e7b36b;
+
+  /* scrollbars */
+  --scrollbar-thumb: rgba(22, 44, 32, 0.22);
+  --scrollbar-thumb-hover: rgba(22, 44, 32, 0.38);
+
+  /* shape */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 28, 22, 0.07);
+  --shadow-md: 0 4px 14px rgba(16, 28, 22, 0.09), 0 1px 3px rgba(16, 28, 22, 0.07);
+  --shadow-lg: 0 18px 48px rgba(16, 28, 22, 0.18), 0 3px 10px rgba(16, 28, 22, 0.08);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-ring);
+
+  /* type */
+  --font-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto,
+    'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-mono: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono',
+    'DejaVu Sans Mono', monospace;
+  /* A typeset-page face: real Computer/Latin Modern where TeX fonts are installed, else a book serif. */
+  --font-serif: 'Latin Modern Roman', 'LM Roman 10', 'CMU Serif', 'TeX Gyre Pagella', 'Iowan Old Style',
+    'Palatino Linotype', Palatino, P052, 'URW Palladio L', 'Book Antiqua', Georgia, serif;
+
+  /* Editor font families — keys match UserSettings.fontFamily (var(--font-editor-<key>)). */
+  --font-editor-monospace: var(--font-mono);
+  --font-editor-dejavu: 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Menlo, Consolas, monospace;
+  --font-editor-source-code: 'Source Code Pro', 'Source Code Variable', 'SourceCodePro', Menlo, Consolas, monospace;
+  --font-editor-fira-code: 'Fira Code', 'Fira Mono', 'FiraCode', Menlo, Consolas, monospace;
+  --font-editor-jetbrains-mono: 'JetBrains Mono', 'JetBrainsMono', Menlo, Consolas, monospace;
+
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-md: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.45;
+
+  /* spacing (4 px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* chrome metrics */
+  --topbar-h: 44px;
+  --rail-w: 44px;
+  --control-h-sm: 26px;
+  --control-h-md: 32px;
+  --panel-header-h: 34px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: 110ms;
+  --duration-normal: 170ms;
+
+  /* stacking */
+  --z-base: 1;
+  --z-panel: 10;
+  --z-sticky: 20;
+  --z-overlay: 50;
+  --z-banner: 60;
+  --z-modal: 1000;
+  --z-dropdown: 1100;
+  --z-toast: 1200;
+  --z-tooltip: 1300;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #151a17;
+  --bg-subtle: #1a201c;
+  --bg-elevated: #1f2622;
+  --bg-sunken: #111512;
+  --bg-hover: rgba(226, 240, 232, 0.06);
+  --bg-active: rgba(226, 240, 232, 0.11);
+  --bg-inverse: #e6ece8;
+  --bg-backdrop: rgba(4, 8, 6, 0.62);
+
+  --fg: #e4eae6;
+  --fg-muted: #a1ada6;
+  --fg-subtle: #84918a; /* ≥ 4.5:1 on every dark surface incl. --bg-elevated */
+  --fg-inverse: #141a16;
+  --fg-on-color: #ffffff;
+
+  --border: #29312c;
+  --border-strong: #3a453f;
+  --border-focus: #52c08a;
+
+  --accent: #46b47d;
+  --accent-hover: #58c48e;
+  --accent-active: #6fd09f;
+  --accent-fg: #07170e;
+  --accent-subtle: rgba(70, 180, 125, 0.15);
+  --accent-subtle-fg: #7dd4a6;
+  --accent-ring: rgba(82, 192, 138, 0.45);
+
+  --danger: #ef6a60;
+  --danger-hover: #f5847b;
+  --danger-subtle: rgba(239, 106, 96, 0.14);
+  --danger-fg: #1b0907;
+  --warning: #e7a53b;
+  --warning-subtle: rgba(231, 165, 59, 0.14);
+  --success: #46b47d;
+  --success-subtle: rgba(70, 180, 125, 0.15);
+  --info: #6fa3ee;
+  --info-subtle: rgba(111, 163, 238, 0.15);
+
+  --selection: rgba(82, 192, 138, 0.3);
+  --highlight: rgba(255, 200, 40, 0.28);
+
+  --paper: #eceee9;
+  --paper-ink: #1b1d1c;
+  --paper-ink-muted: #5a5f5c;
+  --paper-rule: #d5d9d4;
+  --canvas: #0f1311;
+
+  --scrollbar-thumb: rgba(226, 240, 232, 0.18);
+  --scrollbar-thumb-hover: rgba(226, 240, 232, 0.32);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.42), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 22px 56px rgba(0, 0, 0, 0.58), 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Before the app has resolved the theme (no data-theme yet), follow the OS for the page background. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+    background: #151a17;
+  }
+}

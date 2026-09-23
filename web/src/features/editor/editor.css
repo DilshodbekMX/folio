@@ -1,0 +1,919 @@
+/* Editor pane, CodeMirror palettes and editor widgets (prefix ed-). */
+
+/* ----------------------------------------------------------------------------- pane + toolbar */
+
+.ed-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  background: var(--bg);
+  container-type: inline-size;
+  container-name: edpane;
+}
+
+.ed-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: var(--panel-header-h);
+  min-width: 0;
+  padding: 0 6px 0 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.ed-crumbs {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ed-crumbs ol {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-md);
+  white-space: nowrap;
+}
+
+.ed-crumbs li {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.ed-crumbs__folder {
+  flex: 0 1 auto;
+  color: var(--fg-subtle);
+}
+
+.ed-crumbs__folder > span {
+  overflow: hidden;
+  max-width: 140px;
+  text-overflow: ellipsis;
+}
+
+.ed-crumbs__file {
+  flex: 0 0 auto;
+  gap: 6px;
+  color: var(--fg);
+  font-weight: var(--weight-semibold);
+}
+
+.ed-crumbs__file svg {
+  flex: none;
+  color: var(--fg-muted);
+}
+
+/* parents keep their width (the button caps it); the current section shrinks, and when it gets
+   too narrow EditorPane's Breadcrumb folds the outer parents into the "…" crumb (J-7) */
+.ed-crumbs__section {
+  flex: none;
+  color: var(--fg-muted);
+}
+
+.ed-crumbs__section:last-child {
+  flex: 0 1 auto;
+}
+
+.ed-crumbs__section--more {
+  flex: none;
+}
+
+.ed-crumbs__sep {
+  flex: none;
+  margin: 0 1px;
+  color: var(--fg-subtle);
+}
+
+.ed-crumbs__sectionbtn {
+  overflow: hidden;
+  max-width: 240px;
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  font-size: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.ed-crumbs__sectionbtn:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ed-crumbs__sectionbtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ed-crumbs__more {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 4px;
+}
+
+.ed-crumbs__more[aria-expanded='true'] {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.ed-toolbar__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.ed-toolbar__status:empty {
+  display: none;
+}
+
+.ed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  background: var(--info-subtle);
+  color: var(--info);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+
+.ed-badge:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ed-badge--offline {
+  background: var(--warning-subtle);
+  color: var(--warning);
+}
+
+.ed-toolbar__actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.ed-toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 4px;
+}
+
+.ed-toolbar__group + .ed-toolbar__group {
+  border-left: 1px solid var(--border);
+}
+
+/* groups that do not fit are moved into the ⋯ menu by EditorToolbar (measured, not hidden here) */
+
+.ed-pane__body {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ed-pane__center {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.ed-pane__binary {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ed-pane__binary > * {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ------------------------------------------------------------------------------------ editor */
+
+.ed-editor {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--ed-bg);
+  color: var(--ed-fg);
+}
+
+.ed-editor__host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ed-editor__host[hidden] {
+  display: none;
+}
+
+.ed-editor__host > .cm-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+/* the caret is the focus indicator of the text area (no page-wide focus ring on it) */
+.ed-editor .cm-content:focus-visible {
+  box-shadow: none;
+}
+
+.ed-editor__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--ed-bg);
+}
+
+.ed-editor__loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ed-muted);
+  font-size: var(--text-md);
+  animation: ed-fade-in 220ms 160ms both;
+}
+
+@keyframes ed-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------------------------- palettes */
+
+.ed-editor[data-ed-theme='light'] {
+  --ed-bg: #ffffff;
+  --ed-fg: #1d2520;
+  --ed-muted: #69746e;
+  --ed-border: #e1e6e2;
+  --ed-panel-bg: #f7f9f7;
+  --ed-tooltip-bg: #ffffff;
+  --ed-input-bg: #ffffff;
+  --ed-input-border: #cfd6d1;
+  --ed-ring: rgba(31, 122, 77, 0.28);
+  --ed-shadow: 0 10px 28px rgba(16, 28, 22, 0.13), 0 1px 3px rgba(16, 28, 22, 0.08);
+  --ed-hover: rgba(22, 44, 32, 0.06);
+  --ed-accent: #1f7a4d;
+  --ed-accent-fg: #ffffff;
+  --ed-accent-bg: #e2f1e8;
+  --ed-icon-bg: rgba(22, 44, 32, 0.055);
+  --ed-gutter-bg: #fafbfa;
+  --ed-gutter-fg: #a2aba6;
+  --ed-gutter-active-fg: #36403a;
+  --ed-gutter-border: #edf0ee;
+  --ed-active-line: rgba(31, 122, 77, 0.045);
+  --ed-active-line-gutter: rgba(31, 122, 77, 0.08);
+  --ed-selection: rgba(31, 122, 77, 0.2);
+  --ed-selection-blur: rgba(22, 44, 32, 0.1);
+  --ed-cursor: #1f7a4d;
+  --ed-match: rgba(255, 200, 40, 0.38);
+  --ed-match-border: rgba(210, 155, 0, 0.55);
+  --ed-match-selected: rgba(255, 140, 30, 0.5);
+  --ed-selection-match: rgba(31, 122, 77, 0.12);
+  --ed-bracket-match: rgba(31, 122, 77, 0.14);
+  --ed-bracket-match-border: rgba(31, 122, 77, 0.45);
+  --ed-bracket-bad: rgba(210, 59, 51, 0.18);
+  --ed-fold-bg: #f0f3f1;
+  --ed-lint-active: rgba(210, 59, 51, 0.08);
+  --ed-error: #d23b33;
+  --ed-warning: #c27a07;
+  --ed-info: #3a78c9;
+  --ed-flash: rgba(255, 196, 30, 0.42);
+
+  --ed-tok-cmd: #2757b0;
+  --ed-tok-keyword: #8a35b8;
+  --ed-tok-env: #a85600;
+  --ed-tok-heading: #17744a;
+  --ed-tok-label: #0b7680;
+  --ed-tok-string: #a0431c;
+  --ed-tok-package: #a0431c;
+  --ed-tok-math: #8a3a8e;
+  --ed-tok-math-cmd: #6c2fa0;
+  --ed-tok-math-delim: #c0266a;
+  --ed-tok-number: #0a6b72;
+  --ed-tok-bracket: #6f7a74;
+  --ed-tok-escape: #b3306f;
+  --ed-tok-operator: #c24610;
+  --ed-tok-comment: #7d8983;
+}
+
+.ed-editor[data-ed-theme='dark'] {
+  --ed-bg: #151a17;
+  --ed-fg: #d8e0db;
+  --ed-muted: #8a968f;
+  --ed-border: #2a322d;
+  --ed-panel-bg: #1a201c;
+  --ed-tooltip-bg: #1e2521;
+  --ed-input-bg: #131815;
+  --ed-input-border: #37413b;
+  --ed-ring: rgba(82, 192, 138, 0.35);
+  --ed-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.45);
+  --ed-hover: rgba(226, 240, 232, 0.07);
+  --ed-accent: #5cc995;
+  --ed-accent-fg: #07170e;
+  --ed-accent-bg: rgba(70, 180, 125, 0.2);
+  --ed-icon-bg: rgba(226, 240, 232, 0.07);
+  --ed-gutter-bg: #151a17;
+  --ed-gutter-fg: #4e5a53;
+  --ed-gutter-active-fg: #b8c4bd;
+  --ed-gutter-border: #1d231f;
+  --ed-active-line: rgba(226, 240, 232, 0.035);
+  --ed-active-line-gutter: rgba(226, 240, 232, 0.05);
+  --ed-selection: rgba(82, 192, 138, 0.26);
+  --ed-selection-blur: rgba(226, 240, 232, 0.1);
+  --ed-cursor: #6fdca3;
+  --ed-match: rgba(255, 200, 40, 0.2);
+  --ed-match-border: rgba(255, 200, 40, 0.5);
+  --ed-match-selected: rgba(255, 160, 40, 0.4);
+  --ed-selection-match: rgba(82, 192, 138, 0.14);
+  --ed-bracket-match: rgba(82, 192, 138, 0.18);
+  --ed-bracket-match-border: rgba(82, 192, 138, 0.5);
+  --ed-bracket-bad: rgba(239, 106, 96, 0.25);
+  --ed-fold-bg: #202823;
+  --ed-lint-active: rgba(239, 106, 96, 0.12);
+  --ed-error: #f0716a;
+  --ed-warning: #e7a53b;
+  --ed-info: #6fa3ee;
+  --ed-flash: rgba(255, 200, 40, 0.2);
+
+  --ed-tok-cmd: #7cb0ff;
+  --ed-tok-keyword: #d3a6ff;
+  --ed-tok-env: #f0b46e;
+  --ed-tok-heading: #6ddca0;
+  --ed-tok-label: #5fd3cd;
+  --ed-tok-string: #f09c73;
+  --ed-tok-package: #f09c73;
+  --ed-tok-math: #e5a0ef;
+  --ed-tok-math-cmd: #c792ea;
+  --ed-tok-math-delim: #ff7eb3;
+  --ed-tok-number: #7fd8d0;
+  --ed-tok-bracket: #8b9891;
+  --ed-tok-escape: #ff94bd;
+  --ed-tok-operator: #ffa45c;
+  --ed-tok-comment: #6c7a72;
+}
+
+.ed-editor[data-ed-theme='one-dark'] {
+  --ed-bg: #282c34;
+  --ed-fg: #abb2bf;
+  --ed-muted: #7d8799;
+  --ed-border: #3a3f4b;
+  --ed-panel-bg: #21252b;
+  --ed-tooltip-bg: #2c313a;
+  --ed-input-bg: #1e2227;
+  --ed-input-border: #414855;
+  --ed-ring: rgba(97, 175, 239, 0.35);
+  --ed-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.45);
+  --ed-hover: rgba(255, 255, 255, 0.07);
+  --ed-accent: #61afef;
+  --ed-accent-fg: #14171c;
+  --ed-accent-bg: rgba(97, 175, 239, 0.18);
+  --ed-icon-bg: rgba(255, 255, 255, 0.07);
+  --ed-fold-bg: #2c313a;
+  --ed-lint-active: rgba(224, 108, 117, 0.14);
+  --ed-error: #e06c75;
+  --ed-warning: #e5c07b;
+  --ed-info: #61afef;
+  --ed-flash: rgba(229, 192, 123, 0.22);
+
+  --ed-tok-cmd: #e06c75;
+  --ed-tok-env: #e5c07b;
+  --ed-tok-label: #61afef;
+  --ed-tok-string: #98c379;
+  --ed-tok-package: #e5c07b;
+  --ed-tok-math: #d19a66;
+}
+
+/* ------------------------------------------------------------------------ gutters, folding */
+
+.ed-fold-marker {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 100%;
+  color: var(--ed-gutter-fg);
+  opacity: 0;
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ed-editor .cm-gutters:hover .ed-fold-marker,
+.ed-fold-marker.is-closed {
+  opacity: 1;
+}
+
+.ed-fold-marker.is-closed {
+  color: var(--ed-accent);
+}
+
+.ed-fold-marker:hover {
+  color: var(--ed-fg);
+}
+
+/* vim block cursor in our palette (beats the vim extension's own theme) */
+.ed-editor .cm-editor .cm-fat-cursor {
+  background: var(--ed-cursor);
+  color: var(--ed-bg);
+  opacity: 0.85;
+}
+
+.ed-editor .cm-editor:not(.cm-focused) .cm-fat-cursor {
+  background: none;
+  outline: solid 1px var(--ed-cursor);
+}
+
+.ed-flash-line {
+  animation: ed-flash 1.6s ease-out;
+}
+
+@keyframes ed-flash {
+  0%,
+  30% {
+    background-color: var(--ed-flash);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ------------------------------------------------------------------------------ find panel */
+
+.ed-search {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px 8px 7px 6px;
+  color: var(--ed-fg);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+}
+
+.ed-search__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ed-search__row[hidden] {
+  display: none;
+}
+
+.ed-search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  min-width: 120px;
+  max-width: 480px;
+  height: 28px;
+  border: 1px solid var(--ed-input-border);
+  border-radius: 6px;
+  background: var(--ed-input-bg);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.ed-search__field:focus-within {
+  border-color: var(--ed-accent);
+  box-shadow: 0 0 0 3px var(--ed-ring);
+}
+
+.ed-search.is-empty .ed-search__row:first-child .ed-search__field,
+.ed-search.is-invalid .ed-search__row:first-child .ed-search__field {
+  border-color: var(--ed-error);
+}
+
+.ed-search__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 8px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ed-fg);
+  font-family: var(--ed-font, var(--font-mono));
+  font-size: 12.5px;
+}
+
+.ed-search .ed-search__input:focus-visible {
+  box-shadow: none;
+}
+
+.ed-search__input::placeholder {
+  color: var(--ed-muted);
+  font-family: var(--font-ui);
+}
+
+.ed-search__opts {
+  display: flex;
+  gap: 1px;
+  padding-right: 3px;
+}
+
+.ed-search__opt {
+  height: 20px;
+  min-width: 22px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--ed-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ed-search__opt:hover {
+  background: var(--ed-hover);
+  color: var(--ed-fg);
+}
+
+.ed-search__opt.is-on {
+  background: var(--ed-accent-bg);
+  color: var(--ed-accent);
+  box-shadow: inset 0 0 0 1px var(--ed-accent);
+}
+
+.ed-search__count {
+  flex: none;
+  min-width: 76px;
+  color: var(--ed-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ed-search.is-empty .ed-search__count,
+.ed-search.is-invalid .ed-search__count {
+  color: var(--ed-error);
+}
+
+.ed-search__nav,
+.ed-search__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+
+.ed-search__actions {
+  gap: 6px;
+}
+
+.ed-search__btn {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  color: var(--ed-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ed-search__btn:hover {
+  background: var(--ed-hover);
+  color: var(--ed-fg);
+}
+
+.ed-search__btn[hidden] {
+  display: none;
+}
+
+.ed-search__toggle svg {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.ed-search__toggle.is-open svg {
+  transform: rotate(90deg);
+}
+
+.ed-search__close {
+  margin-left: auto;
+}
+
+.ed-search__spacer {
+  flex: none;
+  width: 26px;
+}
+
+.ed-search__action {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--ed-input-border);
+  border-radius: 5px;
+  background: var(--ed-input-bg);
+  color: var(--ed-fg);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ed-search__action:hover {
+  border-color: var(--ed-accent);
+  color: var(--ed-accent);
+}
+
+.ed-search button:focus-visible,
+.ed-mathpreview button:focus-visible {
+  outline: 2px solid var(--ed-accent);
+  outline-offset: 1px;
+}
+
+/* go-to-line dialog (CodeMirror dialog panel) */
+.ed-editor .cm-goto-line label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ed-muted);
+}
+
+/* -------------------------------------------------------------------------- equation preview */
+
+.ed-mathpreview {
+  max-width: min(640px, 80vw);
+  max-height: 340px;
+  overflow: auto;
+  font-family: var(--font-ui);
+}
+
+.ed-mathpreview__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 4px 3px 10px;
+  border-bottom: 1px solid var(--ed-border);
+  color: var(--ed-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ed-mathpreview__close {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--ed-muted);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.ed-mathpreview__close:hover {
+  background: var(--ed-hover);
+  color: var(--ed-fg);
+}
+
+.ed-mathpreview__render {
+  padding: 10px 16px 12px;
+  color: var(--ed-fg);
+}
+
+.ed-mathpreview--hover .ed-mathpreview__render {
+  padding: 8px 14px;
+}
+
+.ed-mathpreview__body .katex {
+  font-size: 1.42em;
+}
+
+.ed-mathpreview__body .katex-display {
+  margin: 0;
+}
+
+.ed-mathpreview__render.is-stale .ed-mathpreview__body {
+  opacity: 0.4;
+}
+
+.ed-mathpreview__render.is-loading .ed-mathpreview__body:empty::before {
+  content: 'Rendering…';
+  color: var(--ed-muted);
+  font-size: 12px;
+}
+
+.ed-mathpreview__error {
+  margin-top: 6px;
+  color: var(--ed-error);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.ed-mathpreview__body:empty + .ed-mathpreview__error {
+  margin-top: 0;
+}
+
+/* ------------------------------------------------------- completion info, lint messages */
+
+.ed-cite-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  white-space: normal;
+}
+
+.ed-cite-info__title {
+  color: var(--ed-fg);
+  font-weight: 600;
+}
+
+.ed-cite-info__meta,
+.ed-cite-info__text {
+  color: var(--ed-fg);
+}
+
+.ed-cite-info__src {
+  color: var(--ed-muted);
+  font-size: 11px;
+}
+
+.ed-diag {
+  max-width: 420px;
+}
+
+.ed-diag__msg {
+  color: var(--ed-fg);
+  font-weight: 600;
+}
+
+.ed-diag__hint {
+  margin-top: 3px;
+  color: var(--ed-fg);
+  opacity: 0.85;
+}
+
+.ed-diag__src {
+  margin-top: 4px;
+  color: var(--ed-muted);
+  font-size: 11px;
+}
+
+/* ---------------------------------------------------------------------------- symbol palette */
+
+.ed-symbols__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ed-symbols__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ed-symbols__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 6px;
+  max-height: min(340px, 45vh);
+  overflow: auto;
+  padding: 2px;
+}
+
+.ed-symbols__cell {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  color: var(--fg);
+  font-family: 'Latin Modern Math', 'STIX Two Math', 'Cambria Math', var(--font-serif);
+  font-size: 21px;
+  line-height: 1;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ed-symbols__cell:hover:not(:disabled),
+.ed-symbols__cell.is-shown {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+  color: var(--accent-subtle-fg);
+}
+
+.ed-symbols__cell:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ed-symbols__cell:disabled {
+  opacity: 0.55;
+}
+
+.ed-symbols__none {
+  margin: 0;
+  padding: 36px 0;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+.ed-symbols__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 44px;
+}
+
+.ed-symbols__detail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ed-symbols__big {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--bg-sunken);
+  color: var(--fg);
+  font-family: 'Latin Modern Math', 'STIX Two Math', 'Cambria Math', var(--font-serif);
+  font-size: 26px;
+}
+
+.ed-symbols__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+}
+
+.ed-symbols__meta code {
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
+}
+
+.ed-symbols__hint {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  text-align: right;
+}
+
+/* the cursor preview only shows while the editor has focus */
+.ed-editor .cm-editor:not(.cm-focused) .ed-mathpreview:not(.ed-mathpreview--hover) {
+  display: none;
+}
+
+.ed-info-code {
+  display: block;
+  color: var(--ed-fg);
+  font-family: var(--ed-font, var(--font-mono));
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

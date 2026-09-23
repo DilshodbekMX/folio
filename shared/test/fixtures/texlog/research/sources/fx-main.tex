@@ -1,0 +1,19 @@
+\documentclass[a4paper,nonexistentoption]{article}
+\usepackage{hyperref}
+\begin{document}
+\section{Test $x^2$}
+\input{sections/intro}
+\input{"my dir/file name"}
+\input{"figs (old)/part"}
+\input{a-very-long-directory-name-that-keeps-going-and-going/another-long-directory-name-for-wrap-test/deep}
+\label{dup}\label{dup}
+{\bfseries\scshape Bold small caps}
+Paragraph with (unbalanced parenthesis text that goes on and on to make an underfull or overfull box happen here: \hbox to 2cm{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (open}
+
+\begin{tabular}{p{1cm}}
+Averyveryverylongwordthatdoesnotfit (paren \\
+\end{tabular}
+
+\[ \hbox to 20cm{wide} \]
+\missingfilemacro
+\end{document}

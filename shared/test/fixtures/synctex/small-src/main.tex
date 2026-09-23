@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\title{A Small Multi-File Document}
+\author{Folio Test}
+\begin{document}
+\maketitle
+
+\section{Overview}
+This document is split into several files so that SyncTeX has to
+record more than one input. The main file holds the title, this
+overview and the final remarks, while the chapters live in their
+own directory.
+
+\input{chapters/intro}
+\input{chapters/results}
+
+\section{Final remarks}
+Short closing paragraph with an inline formula $a^2 + b^2 = c^2$ and
+some more words to fill the line so that it wraps onto a second line
+of output in the PDF.
+\end{document}

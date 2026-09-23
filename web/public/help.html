@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>User guide · Folio</title>
+    <style>
+      :root {
+        --bg: #ffffff; --fg: #17201b; --muted: #525d57; --subtle: #7f8a84; --border: #e0e5e1;
+        --panel: #f5f7f5; --accent: #1f7a4d;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #151a17; --fg: #e4eae6; --muted: #a1ada6; --subtle: #75827b; --border: #29312c; --panel: #1a201c; --accent: #46b47d; }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--fg); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      header { border-bottom: 1px solid var(--border); }
+      .bar { max-width: 760px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+      .bar a { color: var(--fg); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+      main { max-width: 760px; margin: 0 auto; padding: 32px 20px 80px; }
+      h1 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; margin: 0 0 8px; }
+      .lead { color: var(--muted); margin: 0 0 32px; font-size: 18px; }
+      h2 { font-size: 20px; margin: 40px 0 8px; padding-top: 8px; }
+      h3 { font-size: 16px; margin: 24px 0 4px; }
+      p, li { max-width: 68ch; }
+      ul { padding-left: 22px; }
+      li + li { margin-top: 4px; }
+      a { color: var(--accent); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+      code, kbd { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace; font-size: 0.88em; }
+      code { background: var(--panel); padding: 1px 5px; border-radius: 4px; }
+      kbd { border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--panel); }
+      table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 15px; }
+      th, td { text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { color: var(--muted); font-weight: 600; font-size: 13px; }
+      nav.toc { background: var(--panel); border-radius: 10px; padding: 14px 20px; margin-bottom: 8px; }
+      nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+      .note { color: var(--muted); font-size: 15px; }
+      pre { background: var(--panel); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-size: 14px; }
+      @media (max-width: 560px) { nav.toc ol { columns: 1; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="bar">
+        <a href="/">
+          <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7.5" fill="#1f7a4d"/><path d="M7.5 24.5C7.5 14.6 13.4 8.1 24.5 7.5C24.5 18.3 18.2 24.3 7.5 24.5Z" fill="#fff"/><path d="M7.5 24.5L19 13" fill="none" stroke="#1f7a4d" stroke-width="1.9" stroke-linecap="round"/></svg>
+          Folio
+        </a>
+      </div>
+    </header>
+    <main>
+      <h1>User guide</h1>
+      <p class="lead">Folio is a self-hosted editor for writing LaTeX together: the source on one side, the typeset PDF on the other, and everyone’s edits in real time.</p>
+
+      <nav class="toc" aria-label="Contents">
+        <ol>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#editor">The editor</a></li>
+          <li><a href="#compiling">Compiling</a></li>
+          <li><a href="#sync">Source ↔ PDF</a></li>
+          <li><a href="#files">Files</a></li>
+          <li><a href="#collaborating">Collaborating</a></li>
+          <li><a href="#history">History</a></li>
+          <li><a href="#shortcuts">Keyboard shortcuts</a></li>
+          <li><a href="#admin">Running a server</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="projects">Projects</h2>
+      <p>Your project list shows everything you own or that was shared with you. Use <strong>New project</strong> to start from a blank article, from an example (sections, maths, a figure, a table and citations), or by uploading a <code>.zip</code> of an existing project.</p>
+      <ul>
+        <li><strong>Archive</strong> and <strong>Trash</strong> only change your own list; collaborators are not affected.</li>
+        <li>Only the owner can delete a project for good, from the trash. Collaborators can <strong>Leave</strong> a trashed project instead.</li>
+        <li><strong>Make a copy</strong> copies the files; collaborators, share links, history and chat stay with the original.</li>
+      </ul>
+      <p class="note">When you upload a zip, a single top-level folder is unwrapped, build output such as <code>.aux</code>, <code>.log</code> and <code>.synctex.gz</code> is skipped, and the main document is the <code>.tex</code> file containing <code>\documentclass</code> (preferring <code>main.tex</code>).</p>
+
+      <h2 id="editor">The editor</h2>
+      <p>The top bar holds the menus (File, Edit, Insert, View, Format, Help), the project name (click it to rename), the people who are online (click an avatar to open the file they are in), <strong>History</strong>, <strong>Share</strong> and <strong>Layout</strong>. The rail on the left switches between the file tree, project search and chat; settings and help are at the bottom.</p>
+      <p>Drag the dividers to resize panes. <strong>Layout</strong> switches between split view, editor only and PDF only; the arrow tab at the edge brings the other pane back.</p>
+
+      <h2 id="compiling">Compiling</h2>
+      <p>Press <strong>Recompile</strong>, or <kbd>Ctrl</kbd>+<kbd>Enter</kbd> / <kbd>Ctrl</kbd>+<kbd>S</kbd> (<kbd>⌘</kbd> on a Mac). With auto compile on, Folio recompiles a couple of seconds after you stop typing. Every compile includes your last keystroke.</p>
+      <ul>
+        <li><strong>Compiler</strong> (pdfLaTeX, LaTeX, XeLaTeX, LuaLaTeX), the <strong>main document</strong> and the <strong>timeout</strong> are project settings shared by all editors (Settings → Compiler).</li>
+        <li><strong>Fast [draft]</strong> skips images; <strong>Stop on first error</strong> halts at the first LaTeX error.</li>
+        <li><strong>Recompile from scratch</strong> and <strong>Clear cached files</strong> remove auxiliary files when a stale <code>.aux</code> causes strange errors.</li>
+        <li>Documents that use <code>xr</code>’s <code>\externaldocument</code> are built in the right order automatically.</li>
+      </ul>
+      <p>The logs pane lists errors, warnings and bad boxes with the file and line; <strong>Go to code location</strong> opens the source there.</p>
+
+      <h2 id="sync">Source ↔ PDF</h2>
+      <p>The two arrows on the divider between the editor and the PDF jump between them: <strong>→</strong> highlights where the line under your cursor appears in the PDF, <strong>←</strong> moves the cursor to the source of the PDF location. Double-clicking a word in the PDF is the most precise way to jump to its source.</p>
+
+      <h2 id="files">Files</h2>
+      <p>Create files and folders, upload files or whole folders (drag them onto the tree), rename with <kbd>F2</kbd> or a double-click, and drag items to move them. Right-click a <code>.tex</code> file and choose <strong>Set as main document</strong> to compile it by default. Images, PDFs and EPS files open in a preview.</p>
+
+      <h2 id="collaborating">Collaborating</h2>
+      <p><strong>Share</strong> lets the owner add people by email as <em>editors</em> (who can change everything except sharing) or <em>viewers</em> (who can read, see the PDF and follow the history, but not edit). Link sharing creates an editor link and a view-only link; anyone who opens one after logging in can join with that role. Regenerating or turning off a link stops it from working.</p>
+      <p>Everyone’s cursors and edits appear live. Undo only undoes your own changes. The chat panel keeps a conversation per project.</p>
+
+      <h2 id="history">History</h2>
+      <p>Folio saves versions automatically while you work. Open <strong>History</strong> to browse versions by day, see what changed in each file, compare two versions, label important versions, download a version as a <code>.zip</code>, and restore a single file or the whole project. Restoring never discards anything: it adds a new version.</p>
+
+      <h2 id="shortcuts">Keyboard shortcuts</h2>
+      <p>On a Mac use <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>. <strong>Help → Keyboard shortcuts</strong> in the editor lists them all.</p>
+      <table>
+        <thead><tr><th>Action</th><th>Keys</th></tr></thead>
+        <tbody>
+          <tr><td>Compile</td><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd> or <kbd>Ctrl</kbd>+<kbd>S</kbd></td></tr>
+          <tr><td>Find and replace</td><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td></tr>
+          <tr><td>Go to line</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd></td></tr>
+          <tr><td>Toggle comment</td><td><kbd>Ctrl</kbd>+<kbd>/</kbd></td></tr>
+          <tr><td>Bold / italic</td><td><kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>Ctrl</kbd>+<kbd>I</kbd></td></tr>
+          <tr><td>Undo / redo</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td></tr>
+          <tr><td>Autocomplete</td><td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="admin">Running a server</h2>
+      <p>The first person to open a new Folio server creates the administrator account. Administrators add and remove users from the admin page. Without email, passwords are reset from the command line on the server:</p>
+      <pre>npm run create-user -- --email ada@example.com --name "Ada Rivera" --password '…' [--admin]
+npm run reset-password -- --email ada@example.com --password '…'
+npm run doctor</pre>
+      <p class="note">Compiles run in a sandboxed TeX Live container without network access. <code>npm run doctor</code> checks Docker, the TeX image, git and the data directory.</p>
+    </main>
+  </body>
+</html>
