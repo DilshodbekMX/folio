@@ -95,6 +95,37 @@ describe('zip import over HTTP', () => {
     expect(d.settings.rootFileId).toBe(byPath(d.files, 'paper.tex')!.id)
   })
 
+  it('converts files in a legacy encoding to UTF-8, read as the main document declares', async () => {
+    const latin = (s: string) => Buffer.from(s, 'latin1')
+    const zip = await makeZip([
+      // the main document is plain ASCII but declares Latin-2 for the whole project
+      { name: 'thesis.tex', data: '\\documentclass{report}\n\\usepackage[latin2]{inputenc}\n\\begin{document}\\input{ch1}\\end{document}\n' },
+      // 0xB1 is ą in Latin-2 (± in Windows-1252)
+      { name: 'ch1.tex', data: latin('Za\xb1\r\n') },
+      // declares its own encoding
+      { name: 'refs.bib', data: latin('% !TEX encoding = windows-1252\n@misc{x, title={\x93Caf\xe9\x94}}') },
+      { name: 'fig.png', data: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0xb1]) },
+    ])
+    const r = await upload(zip)
+    expect(r.status).toBe(201)
+    const d = (await A.get<ProjectDetail>(`/api/projects/${r.body.id}`)).body
+    expect(d.files.map(f => `${f.path}:${f.kind}`).sort()).toEqual(['ch1.tex:text', 'fig.png:binary', 'refs.bib:text', 'thesis.tex:text'])
+    expect(d.settings.rootFileId).toBe(byPath(d.files, 'thesis.tex')!.id)
+    const read = (p: string) => fsp.readFile(path.join(t.services.config.dirs.projects, d.id, p), 'utf8')
+    expect(await read('ch1.tex')).toBe('Zaą\n')
+    expect(await read('refs.bib')).toBe('% !TEX encoding = UTF-8\n@misc{x, title={“Café”}}')
+    // LaTeX now reads the converted files as UTF-8
+    expect(await read('thesis.tex')).toContain('\\usepackage[utf8]{inputenc}')
+    expect(byPath(d.files, 'ch1.tex')!.size).toBe(Buffer.byteLength('Zaą\n'))
+  })
+
+  it('leaves the declarations alone when nothing needed converting', async () => {
+    const r = await upload(await makeZip([{ name: 'main.tex', data: '\\documentclass{article}\n\\usepackage[latin1]{inputenc}\n' }]))
+    expect(r.status).toBe(201)
+    const main = await fsp.readFile(path.join(t.services.config.dirs.projects, r.body.id, 'main.tex'), 'utf8')
+    expect(main).toContain('[latin1]{inputenc}')
+  })
+
   it('rejects zip-slip (../) names without writing anything', async () => {
     const before = projectCount()
     const zip = patchBytes(await makeZip([{ name: 'ok.tex', data: 'x' }, { name: 'xx/evil.txt', data: 'pwned' }]), 'xx/evil.txt', '../evil.txt')

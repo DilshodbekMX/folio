@@ -178,6 +178,23 @@ describe('files', () => {
     expect(tmp.filter(n => n.startsWith('upload-'))).toEqual([])
   })
 
+  it('converts text in a Windows encoding to UTF-8, also when it replaces a read-only copy', async () => {
+    // Windows-1252: curly quotes and é, and an inputenc declaration that must now say utf8
+    const win = Buffer.from([...Buffer.from('\\usepackage[latin1]{inputenc}\r\n% \x93quoted\x94 caf\xe9\r\n', 'latin1')])
+    const r = await A.upload(`/api/projects/${pid}/upload`, formWith([{ name: 'win.tex', data: win }]))
+    expect(r.status).toBe(200)
+    expect(r.body.files[0]).toMatchObject({ path: 'win.tex', kind: 'text' })
+    expect((await disk('win.tex')).toString()).toBe('\\usepackage[utf8]{inputenc}\n% “quoted” café\n')
+
+    // a file stored read-only before conversion existed becomes editable when uploaded again
+    await fsp.writeFile(path.join(root, 'old.bst'), win)
+    const old = t.services.db.files.create({ projectId: pid, path: 'old.bst', kind: 'binary', size: win.length })
+    const r2 = await A.upload(`/api/projects/${pid}/upload`, formWith([{ name: 'old.bst', data: win }], { replace: 'true' }))
+    expect(r2.status).toBe(200)
+    expect(r2.body.files[0]).toMatchObject({ id: old.id, kind: 'text', epoch: old.epoch + 1 })
+    expect((await disk('old.bst')).toString()).toContain('“quoted” café')
+  })
+
   it('rejects uploads larger than MAX_UPLOAD_MB with 413', async () => {
     const small = await startTestServer({ MAX_UPLOAD_MB: '1' })
     try {

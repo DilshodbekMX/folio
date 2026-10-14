@@ -28,7 +28,9 @@ import { pipeline } from 'node:stream/promises'
 import { fileURLToPath } from 'node:url'
 import yauzl from 'yauzl'
 import type { Compiler, FileEntry, UserPublic } from '@folio/shared/api'
-import { classifyFile, MAX_TEXT_FILE_BYTES, normalizeText } from '@folio/shared/filetypes'
+import {
+  classifyByName, classifyFile, declaredEncoding, declareUtf8, decodeIncomingText, MAX_TEXT_FILE_BYTES, normalizeText,
+} from '@folio/shared/filetypes'
 import { basename, dirname, extname, normalizePath, validatePath } from '@folio/shared/paths'
 import { newId } from '../db/index.ts'
 import { badRequest, HttpError } from '../http/errors.ts'
@@ -428,6 +430,21 @@ async function stageFile(stagingRoot: string, f: PlannedFile, maxBytes: number, 
   return n
 }
 
+/**
+ * The input encoding a project declares, for its files that are not UTF-8 and declare none
+ * themselves (the chapters of a Latin-1 thesis): a main document's first (declaredEncoding).
+ */
+function projectEncoding(sources: string[]): string | null {
+  let any: string | null = null
+  for (const src of sources) {
+    const e = declaredEncoding(src)
+    if (e === null) continue
+    if (hasDocumentclass(src)) return e
+    any ??= e
+  }
+  return any
+}
+
 function pickRoot(texts: Map<string, string>): string | null {
   const main = texts.get('main.tex')
   if (main !== undefined && hasDocumentclass(main)) return 'main.tex'
@@ -470,8 +487,17 @@ export async function importProject(s: Services, src: CollectedSource, opts: Imp
     // classify; text is normalised in place
     const kinds = new Map<string, 'text' | 'binary'>()
     const texts = new Map<string, string>()
+    const staged = (p: string) => path.join(staging, ...p.split('/'))
+    const putText = async (p: string, text: string) => {
+      const out = Buffer.from(text, 'utf8')
+      await fsp.writeFile(staged(p), out)
+      texts.set(p, text)
+      sizes.set(p, out.length)
+    }
+    /** text by extension but not UTF-8: converted below */
+    const legacy = new Map<string, Buffer>()
     for (const f of files) {
-      const abs = path.join(staging, ...f.path.split('/'))
+      const abs = staged(f.path)
       const size = sizes.get(f.path)!
       if (size > MAX_TEXT_FILE_BYTES) {
         kinds.set(f.path, 'binary')
@@ -486,6 +512,31 @@ export async function importProject(s: Services, src: CollectedSource, opts: Imp
         const out = Buffer.from(text, 'utf8')
         if (!out.equals(bytes)) await fsp.writeFile(abs, out)
         sizes.set(f.path, out.length)
+      } else if (classifyByName(f.path) === 'text') {
+        legacy.set(f.path, bytes)
+      }
+    }
+
+    // text in another encoding (Windows, Latin-1, UTF-16) is converted to UTF-8, read in the
+    // encoding the project declares unless a file declares its own; the declarations then say utf8
+    const converted: { path: string; encoding: string }[] = []
+    if (legacy.size) {
+      const sources = [...texts].filter(([p]) => extname(p) === 'tex').map(([, text]) => text)
+      for (const [p, bytes] of legacy) if (extname(p) === 'tex') sources.push(bytes.toString('latin1'))
+      const hint = projectEncoding(sources)
+      for (const [p, bytes] of legacy) {
+        const decoded = decodeIncomingText(p, bytes, hint)
+        if (!decoded) continue
+        kinds.set(p, 'text')
+        await putText(p, decoded.text)
+        converted.push({ path: p, encoding: decoded.encoding })
+      }
+      legacy.clear()
+    }
+    if (converted.length) {
+      for (const [p, text] of texts) {
+        const fixed = declareUtf8(text)
+        if (fixed !== text) await putText(p, fixed)
       }
     }
 
@@ -562,6 +613,7 @@ export async function importProject(s: Services, src: CollectedSource, opts: Imp
     const binaryPaths = kept.filter(f => kinds.get(f.path) === 'binary').map(f => f.path)
     log.info({ projectId, owner: opts.owner.id, text: textPaths.length, binary: binaryPaths.length, folders: dirs.size, skipped: skipped.length, rootPath }, 'project imported')
     if (skipped.length) log.debug({ projectId, skipped }, 'import skipped entries')
+    if (converted.length) log.info({ projectId, converted }, 'import converted text files to UTF-8')
     return {
       projectId,
       files: entries,

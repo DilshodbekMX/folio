@@ -79,7 +79,8 @@ export function textLengthFits(text: string): boolean {
 /**
  * Full classification. Text-by-extension files that are not valid UTF-8 (e.g. latin1 .tex)
  * or longer than MAX_TEXT_LENGTH characters (UTF-16 code units, after normalisation) are
- * classified 'binary' (read-only, downloadable).
+ * classified 'binary' (read-only, downloadable). Files entering Folio go through
+ * decodeIncomingText instead, which converts other encodings to UTF-8.
  */
 export function classifyFile(path: string, bytes: Uint8Array): Classified {
   if (bytes.byteLength > MAX_TEXT_FILE_BYTES) return 'binary'
@@ -89,6 +90,157 @@ export function classifyFile(path: string, bytes: Uint8Array): Classified {
   if (bytes.byteLength <= MAX_TEXT_LENGTH) return looksLikeUtf8Text(bytes) ? 'text' : 'binary'
   const text = decodeUtf8Text(bytes)
   return text !== null && textLengthFits(text) ? 'text' : 'binary'
+}
+
+/** A text file entering Folio: its normalised text and the encoding it was converted from. */
+export interface IncomingText {
+  text: string
+  /** WHATWG encoding name: 'utf-8' when the file was UTF-8 already */
+  encoding: string
+}
+
+/**
+ * Decode a file entering Folio (upload, replace, import); null when it is binary. Like
+ * classifyFile, except that a text-by-extension file in another encoding (a Windows "ANSI" code
+ * page, Latin-1, UTF-16 from Notepad) is converted instead of becoming read-only. Its encoding
+ * is, in order: a UTF-16 byte-order mark, the file's own declaration (declaredEncoding), the
+ * project's (`hint`), else Windows-1251 when the bytes read as Cyrillic and Windows-1252
+ * otherwise. A sniffed file that is not UTF-8 stays binary, and so do formats that name their
+ * own encoding (KEEPS_OWN_ENCODING). Whoever converts a file also points its encoding
+ * declarations at UTF-8 (declareUtf8).
+ */
+export function decodeIncomingText(path: string, bytes: Uint8Array, hint?: string | null): IncomingText | null {
+  const byName = classifyByName(path)
+  if (byName === 'binary' || bytes.byteLength > MAX_TEXT_FILE_BYTES) return null
+  let text = decodeUtf8Text(bytes)
+  let encoding = 'utf-8'
+  if (text === null) {
+    if (byName !== 'text' || KEEPS_OWN_ENCODING.has(extname(path))) return null
+    const source = sourceEncoding(bytes, hint)
+    if (source === null) return null
+    text = decodeAs(source, bytes)
+    if (text === null || text.includes('\0')) return null
+    encoding = source
+  }
+  text = normalizeText(text)
+  return text.length <= MAX_TEXT_LENGTH ? { text, encoding } : null
+}
+
+/** Text formats that declare their own encoding (<meta charset>, <?xml encoding?>, # coding:, @charset): never converted. */
+const KEEPS_OWN_ENCODING = new Set(['html', 'xml', 'py', 'css'])
+
+/** inputenc options and editor encoding names that are not WHATWG labels (keys without spaces, '-' or '_'). */
+const ENCODING_ALIASES: Record<string, string> = {
+  ansinew: 'windows-1252', isolatin: 'windows-1252', isolatin1: 'windows-1252', windowslatin1: 'windows-1252',
+  latin9: 'iso-8859-15', isolatin9: 'iso-8859-15', latin10: 'iso-8859-16', isolatin2: 'iso-8859-2',
+  isolatin5: 'windows-1254', windowslatin2: 'windows-1250', windowscyrillic: 'windows-1251',
+  applemac: 'macintosh', macosroman: 'macintosh', utf8x: 'utf-8', utf8unicode: 'utf-8',
+}
+
+/** The WHATWG name of an encoding as LaTeX or an editor writes it ('latin1', 'cp1251', 'UTF-8'); null when unknown or unsupported. */
+function canonicalEncoding(name: string): string | null {
+  const label = name.trim().toLowerCase()
+  try {
+    return new TextDecoder(ENCODING_ALIASES[label.replace(/[\s_-]/g, '')] ?? label).encoding
+  } catch {
+    return null
+  }
+}
+
+const isLegacyEncoding = (name: string) => {
+  const e = canonicalEncoding(name)
+  return e !== null && e !== 'utf-8'
+}
+
+const MAGIC_ENCODING = /^(%\s*!\s*TEX\s+encoding\s*=\s*)(.*?)\s*$/i
+const INPUTENC = /\\(?:usepackage|RequirePackage)\s*\[([^\]]*)\]\s*\{inputenc\}/g
+const INPUTENCODING = /\\inputencoding\s*\{([^}]*)\}/g
+const BIBENCODING = /\bbibencoding\s*=\s*([\w-]+)/g
+
+/** The part of a line before its comment (a '%' not escaped by a backslash). */
+function codeOf(line: string): string {
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '\\') i++
+    else if (line[i] === '%') return line.slice(0, i)
+  }
+  return line
+}
+
+/**
+ * The encoding a TeX source declares: a `% !TEX encoding = …` line, else the last inputenc option
+ * or \inputencoding outside comments. A WHATWG name ('utf-8', 'windows-1252', …), '' for an
+ * encoding Folio cannot read (e.g. cp850), null without a declaration. ASCII is all it needs, so
+ * a file that is not UTF-8 can be read as Latin-1 to find it.
+ */
+export function declaredEncoding(source: string): string | null {
+  let last: string | null = null
+  for (const line of source.split('\n')) {
+    const magic = MAGIC_ENCODING.exec(line)
+    if (magic) return canonicalEncoding(magic[2]!) ?? ''
+    const code = codeOf(line)
+    for (const m of code.matchAll(INPUTENC)) last = m[1]!.split(',').map(s => s.trim()).filter(Boolean).at(-1) ?? last
+    for (const m of code.matchAll(INPUTENCODING)) last = m[1]!.trim()
+  }
+  return last === null ? null : canonicalEncoding(last) ?? ''
+}
+
+/**
+ * Point legacy encoding declarations at UTF-8 once the files they describe are converted:
+ * inputenc options (\usepackage, \RequirePackage, \inputencoding), biblatex's bibencoding and
+ * `% !TEX encoding`. Otherwise LaTeX would read the converted bytes as Latin-1 and print "Ã©".
+ * Commented-out declarations are left alone.
+ */
+export function declareUtf8(text: string): string {
+  return text.split('\n').map(line => {
+    const magic = MAGIC_ENCODING.exec(line)
+    if (magic) return isLegacyEncoding(magic[2]!) ? `${magic[1]}UTF-8` : line
+    const code = codeOf(line)
+    const fixed = code
+      .replace(INPUTENC, (m, opts: string) => opts.split(',').some(isLegacyEncoding) ? m.replace(`[${opts}]`, '[utf8]') : m)
+      .replace(INPUTENCODING, (m, name: string) => isLegacyEncoding(name) ? '\\inputencoding{utf8}' : m)
+      .replace(BIBENCODING, (m, name: string) => isLegacyEncoding(name) ? 'bibencoding=utf8' : m)
+    return fixed === code ? line : fixed + line.slice(code.length)
+  }).join('\n')
+}
+
+/** The encoding of a file that is not UTF-8 (see decodeIncomingText); null when Folio cannot read it. */
+function sourceEncoding(bytes: Uint8Array, hint?: string | null): string | null {
+  if (bytes[0] === 0xff && bytes[1] === 0xfe) return 'utf-16le'
+  if (bytes[0] === 0xfe && bytes[1] === 0xff) return 'utf-16be'
+  for (const e of [declaredEncoding(decodeAs('windows-1252', bytes) ?? ''), hint]) {
+    if (e === '') return null
+    // a UTF-8 declaration is evidently wrong for these bytes
+    if (e && e !== 'utf-8') return e
+  }
+  return looksCyrillic(bytes) ? 'windows-1251' : 'windows-1252'
+}
+
+/**
+ * Windows-1251 or Windows-1252? Both have their letters at 0xC0–0xFF, but Cyrillic text has
+ * whole words of them, Western text an accented letter or two between ASCII letters.
+ */
+function looksCyrillic(bytes: Uint8Array): boolean {
+  let letters = 0
+  let inWords = 0
+  let run = 0
+  for (let i = 0; i <= bytes.length; i++) {
+    if (i < bytes.length && bytes[i]! >= 0xc0) {
+      letters++
+      run++
+      continue
+    }
+    if (run >= 3) inWords += run
+    run = 0
+  }
+  return inWords * 2 > letters
+}
+
+function decodeAs(encoding: string, bytes: Uint8Array): string | null {
+  try {
+    return new TextDecoder(encoding, { fatal: true }).decode(bytes)
+  } catch {
+    return null
+  }
 }
 
 /** Normalise text entering the system: strip BOM, CRLF/CR → LF. (CRLF inside Y.Text desynchronises CodeMirror.) */

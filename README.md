@@ -241,6 +241,14 @@ files, `ready/` and `*.zip` are skipped. `--external` lists `xr` documents to bu
 one; without it, Folio finds `\externaldocument` by itself. Folio edits its **own copy** in the
 data directory; the source directory is never touched.
 
+Folio stores text as UTF-8. Text files saved in another encoding (a Windows code page, Latin-1, or
+UTF-16 from Notepad) are converted when you import or upload them, so they stay editable. Folio
+reads the encoding from `\usepackage[…]{inputenc}` or `% !TEX encoding`, in the file or in the
+main document. Without one, it uses Windows Western, or Windows Cyrillic for Cyrillic text. Legacy
+`inputenc` declarations are then changed to `utf8`. HTML, XML, Python and CSS files name their own
+encoding and are never converted. A file that is already read-only becomes editable when you
+upload it again with **Replace…**.
+
 ### Everyday commands
 
 | Command | What it does |

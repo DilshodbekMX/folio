@@ -17,7 +17,7 @@ import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import path from 'node:path'
 import type { FileEntry, UserPublic } from '@folio/shared/api'
-import { classifyFile, normalizeText, textLengthFits } from '@folio/shared/filetypes'
+import { declareUtf8, decodeIncomingText, normalizeText, textLengthFits } from '@folio/shared/filetypes'
 import { dirname, isWithin, normalizePath } from '@folio/shared/paths'
 import { WS_CLOSE } from '@folio/shared/protocol'
 import type { FileRecord } from '../db/index.ts'
@@ -165,10 +165,12 @@ export function createFileService(s: Services): FileService {
 
   async function writeFile(projectId: string, user: UserPublic | null, rawPath: string, bytes: Buffer, opts: { replace?: boolean } = {}): Promise<FileEntry> {
     const p = checkProjectPath(rawPath)
-    const kind = classifyFile(p, bytes)
+    const decoded = decodeIncomingText(p, bytes)
+    const kind = decoded ? 'text' : 'binary'
     const userId = user?.id ?? null
-    // text content entering the system is always LF-only UTF-8 without BOM
-    const text = kind === 'text' ? normalizeText(bytes.toString('utf8')) : null
+    // text content entering the system is always LF-only UTF-8 without BOM; text in another
+    // encoding is converted, and its encoding declarations with it
+    const text = decoded && (decoded.encoding === 'utf-8' ? decoded.text : declareUtf8(decoded.text))
     const data = text !== null ? Buffer.from(text, 'utf8') : bytes
     // overwriting a file: its edits since the last history version are committed first (see remove)
     const overwritten = opts.replace ? getByPath(projectId, p) : null
