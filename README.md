@@ -21,6 +21,7 @@
 [Quick start](#quick-start) ·
 [Screenshots](#screenshots) ·
 [Configuration](#configuration) ·
+[Accounts](#accounts) ·
 [Backups](#backups) ·
 [Security](#security) ·
 [Troubleshooting](#troubleshooting) ·
@@ -334,6 +335,43 @@ Variables already set in the environment take precedence.
 
 <br>
 
+<a id="accounts"></a>
+
+## 👤 Accounts
+
+Folio sends no email, so there are no invitations and no "forgot password" link. An
+administrator creates accounts and resets passwords, in the browser or on the server.
+
+| Way | Who | Notes |
+|---|---|---|
+| The **setup page** | Whoever opens Folio first | Shown only while there are no accounts. This first account is always an administrator. |
+| **Admin → New user** | An administrator | Enter a name, an email and a starting password; tick **Administrator** if needed. Copy the sign-in details and send them yourself: the password is not shown again. |
+| `npm run create-user -- …` | Anyone with a shell on the server | Add `--admin` for an administrator. |
+| **Create an account** on the login page | Anyone who can reach the server | Only with `ALLOW_SIGNUP=true`. These accounts are never administrators. |
+
+The **Admin** page (the account menu at the top right → **Admin**) lists every account, and creates
+and deletes them. Deleting an account also deletes the projects it owns, with their files, history
+and chat, for every collaborator. The Admin page cannot reset passwords or change who is an
+administrator.
+
+### Passwords
+
+Anyone who is logged in can change their own password under **Account settings → Password**, by
+entering the current one. A forgotten password, an administrator's included, can only be reset on
+the server:
+
+```bash
+npm run reset-password -- --email you@example.com --password "a new password"
+```
+
+This also signs the account out everywhere. Passwords need at least 8 characters.
+
+> [!IMPORTANT]
+> Anyone who can run commands on the server, or read its `data/` directory, can create or reset
+> any account. Give that access only to the people who run Folio.
+
+<br>
+
 <a id="backups"></a>
 
 ## 💾 Data and backups
@@ -576,7 +614,7 @@ WantedBy=multi-user.target
 
 | Symptom | Fix |
 |---|---|
-| Forgot the admin password | `npm run reset-password -- --email you@example.com --password "…"` |
+| Forgot the admin password | `npm run reset-password -- --email you@example.com --password "…"` ([Accounts](#accounts)) |
 | The editor keeps showing "Reconnecting…" behind a proxy | The proxy must forward WebSocket upgrades on `/ws/`. Check that `PUBLIC_ORIGIN` exactly matches the URL in the browser. |
 | "Cross-origin request rejected" behind a proxy | Set `PUBLIC_ORIGIN`, or forward the original `Host` with its port (`$http_host` in nginx) and `X-Forwarded-Proto`. |
 
