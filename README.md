@@ -1,6 +1,6 @@
 <div align="center">
 
-<picture>
+<picture> 
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner-dark.svg">
   <img src="docs/images/banner-light.svg" alt="Folio — self-hosted collaborative LaTeX" width="100%">
 </picture>
