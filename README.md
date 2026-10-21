@@ -5,7 +5,7 @@
   <img src="docs/images/banner-light.svg" alt="Folio — self-hosted collaborative LaTeX" width="100%">
 </picture>
 
-### Write LaTeX together, in your browser, on your own server.
+### Write LaTeX together, in your browser, on your own server. 
 
 <p>
 <img alt="Node.js 22+" src="https://img.shields.io/badge/Node.js-22.12%2B-1f7a4d?logo=nodedotjs&logoColor=white">
